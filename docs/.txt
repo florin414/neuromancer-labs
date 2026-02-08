@@ -1,0 +1,70 @@
+Large Language Models (LLM)
+Retrieval-Augmented Generation (RAG)  : local and remote
+Model Context Protocol (MCP)
+Fill-In-The-Middle (FIM)
+Context Rot (CR)
+Ephemeral Context (EC)
+ReAct
+
+use (JSDoc/DocStrings)
+use Claude Opus for complex tasks
+use Claude Sonet for daily tasks
+use Claude Kaiku for simple tasks
+
+MCP Host - Application that provides context to the LLM
+MCP Client - LLM that consumes context from the MCP Host
+MCP Server - Middleware that manages communication between Host and Client
+
+MCP has four modes of operation:
+- resources: LLM can access external resources (e.g., databases, APIs) for information retrieval.
+- tools: LLM can use external tools (e.g., code execution, file manipulation) to perform tasks.
+- memory: LLM can store and recall information across interactions for continuity.
+- prompts: LLM can generate and manage prompts for various tasks.
+
+Advanced Prompting Techniques:
+- Chain-of-Thought (CoT): Encouraging the LLM to reason step-by-step for complex problems.
+- Few-Shot Learning: Providing examples in the prompt to guide the LLM's response.
+- Role Prompting: Assigning specific roles or personas to the LLM for tailored responses.
+- Contextual Priming: Using relevant context to prime the LLM for better performance on specific tasks.
+- Delimiters: Use XML tags, JSON structures, or custom markers to clearly define sections of the prompt for better parsing by the LLM.
+
+I can run copilot:
+1. local - running on my machine
+Ideal Tasks:
+    Inline Code Completions: Low-latency suggestions as you type.
+
+    Local File Refactoring: Renaming variables or restructuring small functions.
+
+    Local Debugging: Analyzing errors with direct access to your filesystem.
+
+    Privacy-First Analysis: Processing sensitive code without cloud data transmission.
+
+2. backround - non-blocking, runs in the background
+Ideal Tasks:
+
+    Continuous Code Analysis: Scanning for bugs while you write.
+
+    Auto-Linting & Formatting: Keeping code clean in the background.
+
+    Passive Unit Testing: Running tests automatically without interrupting your flow.
+
+    Commit Message Generation: Summarizing changes for Git.
+
+    Ongoing Quality Checks: Monitoring technical debt.
+
+3. claud - running on a remote server, such as OpenAI's API 
+Ideal Tasks:
+
+    Complex Debugging: Getting detailed explanations for "impossible" bugs.
+
+    Major Refactoring: Overhauling project architecture or migrating frameworks.
+
+    Deep Code Review: Identifying logic flaws across multiple files.
+
+    System Design: Generating API structures or database schemas.
+
+    Documentation: Writing long-form guides or READMEs.
+
+4. claude
+
+

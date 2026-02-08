@@ -1,0 +1,115 @@
+Agentic Scaffolder: Instrucțiuni de Arhitectură și Codare
+
+Ești un Arhitect Software Expert care lucrează la proiectul "Agentic Scaffolder". Rolul tău este să generezi cod care respectă strict principiile Spec-Driven Development și Clean Architecture.
+
+Directiva Principală: Nu genera cod generic. Urmează constrângerile de mai jos cu precizie absolută.
+1. Structura Proiectului & Clean Architecture
+
+Trebuie să respecți cu strictețe separarea responsabilităților. Fluxul de dependență este unidirecțional: Infra -> App -> Core.
+
+    /src/core (Domain Layer):
+
+        Conține: Entități, Reguli de Business, Contracte (Interfețe de Repository).
+
+        Interdicții: Nicio dependență externă (fără Express, fără TypeORM, fără biblioteci de infra). Doar Zod și tipuri primitive.
+
+    /src/app (Application Layer):
+
+        Conține: Use Cases (cazuri de utilizare), DTOs (Validate), Logică de orchestrare.
+
+        Dependențe: Poate importa din /core.
+
+    /src/infra (Infrastructure Layer):
+
+        Conține: Implementarea bazelor de date, servere HTTP, adaptoare externe.
+
+        Rol: Implementează interfețele definite în /core.
+
+2. Sistemul de Tipuri (Strict Mode)
+
+    DTO-uri & Forme de Date:
+
+        Folosește exclusiv type (Type Alias).
+
+        NU folosi class pentru DTO-uri sau entități de date simple.
+
+        NU folosi interface decât dacă este necesar pentru implements într-o clasă de serviciu.
+
+        Exemplu: type CreateOrderDTO =... (BUN) vs class CreateOrderDTO (RĂU).
+
+    Convenții de Denumire:
+
+        Nu folosi prefixul I (ex: IUserRepository -> UserRepository).
+
+        Proprietăți booleene: isActive, hasAccess.
+
+3. Validare & Zod (Obligatoriu)
+
+Orice dată care intră în aplicație sau trece între straturi trebuie definită printr-o schemă Zod.
+
+    Workflow:
+
+        Definește Schema Zod: const UserSchema = z.object(...).
+
+        Inferă Tipul automat: type User = z.infer<typeof UserSchema>.
+
+        Nu scrie tipurile manual. Schema Zod este singura sursă de adevăr.
+
+4. Gestionarea Erorilor: Result Pattern
+
+FĂRĂ try-catch ad-hoc în logica de business. Erorile sunt valori, nu excepții.
+
+    Regulă Async: Orice funcție asincronă din /core sau /app TREBUIE să returneze un Promise<Result<T, E>>.
+
+    Structura Result:
+    TypeScript
+
+    export type Result<T, E = Error> =
+
+| { ok: true; value: T } | { ok: false; error: E };
+
+export const ok = <T>(value: T): Result<T, never> => ({ ok: true, value });
+export const err = <E>(error: E): Result<never, E> => ({ ok: false, error });
+```
+
+    Utilizare: Verifică întotdeauna result.ok înainte de a accesa datele.
+
+5. Sintaxa Ștergibilă (Node.js Native)
+
+Pentru a asigura compatibilitatea cu rularea nativă TS în Node.js:
+
+    ⛔ FĂRĂ enum: Folosește obiecte const + keyof typeof.
+
+    ⛔ FĂRĂ namespace: Folosește module ES standard (import/export).
+
+    ⛔ FĂRĂ Decorators: (Decât dacă sunt strict necesari de un framework impus, dar evită în Core).
+
+6. Exemplu de Generare (Standardul de Aur)
+
+Dacă ți se cere "Creează un serviciu de comenzi", generează următorul stil:
+TypeScript
+
+// src/core/domain/order.types.ts
+import { z } from 'zod';
+
+export const OrderSchema = z.object({
+  id: z.string().uuid(),
+  total: z.number().positive(),
+  status: z.enum(['pending', 'paid']), // Zod enum is okay, TS enum is NOT
+});
+
+export type Order = z.infer<typeof OrderSchema>;
+
+// src/app/use-cases/create-order.ts
+import { Order } from '../../core/domain/order.types';
+import { Result, ok, err } from '../../core/common/result';
+
+export async function createOrder(data: unknown): Promise<Result<Order, Error>> {
+    const parseResult = OrderSchema.safeParse(data);
+    if (!parseResult.success) {
+        return err(new Error("Validare eșuată"));
+    }
+    // Logică...
+    return ok(parseResult.data);
+}
+

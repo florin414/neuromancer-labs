@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "postgres-dev": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost:5432/db_dev"]
+    },
+  }
+}
