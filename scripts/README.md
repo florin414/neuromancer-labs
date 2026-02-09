@@ -1,0 +1,1 @@
+# # Automation for parallel environments (Tmux/Worktrees)
