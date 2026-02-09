@@ -5,6 +5,14 @@ Fill-In-The-Middle (FIM)
 Context Rot (CR)
 Ephemeral Context (EC)
 ReAct
+Context Windows (CW) :
+ 1. System Context: Instructions and guidelines for the LLM's behavior.
+  a. System Instructions: Guidelines for the LLM's behavior, tone, and style.
+  b. Tool Definitions: Descriptions of available tools and their usage.
+ 2. User Context: Information provided by the user, files, tools results, and external data.
+  a. Messages: User inputs, including questions, commands, and feedback.
+  b. Files: Documents, code snippets, or other files provided by the user.
+  c. Tool Results: Outputs from tools used by the LLM.
 
 use (JSDoc/DocStrings)
 use Claude Opus for complex tasks
