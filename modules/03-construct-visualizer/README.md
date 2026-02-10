@@ -1,1 +1,0 @@
-# Automated Mermaid/Excalidraw Generation
